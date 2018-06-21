@@ -1,0 +1,86 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webtest
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app: webtester
+spec:
+  rules:
+  - host: test.srv.k8s.muc1tes.financial.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: webling
+          servicePort: 80
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: webling
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: webtester
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webtest
+  namespace: default
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webtester
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: webtester
+    spec:
+      containers:
+      - name: testyo
+        image: financialcom/devops-citests:v0.0.3
+        imagePullPolicy: Always
+        env:
+        - name: PORT
+          value: "8000"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/financialcom/
+      volumes:
+      - name: config
+        configMap:
+          name: webtestmap
+      imagePullSecrets:
+        - name: hubcreds
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webtestmap
+data:
+  config.file: |-
+    boop
