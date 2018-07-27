@@ -28,7 +28,7 @@ func main() {
     fmt.Fprintf(os.Stdout, "Start listening on :%s\n", port)
     hostname, _ := os.Hostname()
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        _, config := readconf()
+        config, _ := readconf()
         timestamp := time.Now().Format("02/01/2006 15:04:05")
         fmt.Fprintf(os.Stdout, "%s stdout for logging: %s\n", timestamp, config)
         fmt.Fprintf(w, "Hostname: \n%s\n", hostname)
@@ -53,7 +53,7 @@ func readconf() (string, error) {
     // read configfile
     b, err := ioutil.ReadFile("config.file")
     if err != nil {
-        return "", errors.New("file not available.")
+        return "OH NO", errors.New("file not available.")
     } else {
         str := string(b)
         return str, nil
