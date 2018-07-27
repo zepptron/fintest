@@ -9,13 +9,13 @@ metadata:
     app: webtester
 spec:
   rules:
-  - host: test.srv.k8s.muc1tes.financial.com
+  - host: erm.something.com
     http:
       paths:
       - path: /
         backend:
           serviceName: webling
-          servicePort: 80
+          servicePort: 8000
 
 ---
 
@@ -24,14 +24,17 @@ apiVersion: v1
 metadata:
   name: webling
   namespace: default
+  labels:
+    app: webtester
 spec:
   type: ClusterIP
   selector:
     app: webtester
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
+  - name: web
+    protocol: TCP
+    port: 8000
+    targetPort: web
 
 ---
 
@@ -41,7 +44,7 @@ metadata:
   name: webtest
   namespace: default
   labels:
-    app: web
+    app: webtester
 spec:
   replicas: 3
   selector:
@@ -59,21 +62,22 @@ spec:
         app: webtester
     spec:
       containers:
-      - name: testyo
-        image: zepptron/fintest:0.0.1
+      - name: testing
+        image: zepp/fintest:latest
         imagePullPolicy: Always
         env:
         - name: PORT
           value: "8000"
+        ports:
+        - name: web
+          containerPort: 8000
         volumeMounts:
         - name: config
-          mountPath: /etc/financialcom/
+          mountPath: /etc/wurst/
       volumes:
       - name: config
         configMap:
           name: webtestmap
-      imagePullSecrets:
-        - name: hubcreds
 
 ---
 
@@ -83,4 +87,4 @@ metadata:
   name: webtestmap
 data:
   config.file: |-
-    boop
+    testyo
