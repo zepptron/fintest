@@ -7,6 +7,6 @@ RUN apk add --no-cache git && \
 
 FROM alpine:latest
 COPY --from=0 /go/src/main /usr/bin/main
-COPY code/config.file /etc/financialcom/
-WORKDIR /etc/financialcom/
+COPY code/config.file /etc/wurst/
+WORKDIR /etc/wurst/
 CMD ["/usr/bin/main"]
