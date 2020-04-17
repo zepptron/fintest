@@ -53,7 +53,7 @@ func portcheck() string {
 
 func readconf() (string, error) {
 	// read configfile
-	b, err := ioutil.ReadFile("config.file")
+	b, err := ioutil.ReadFile("mount/config.file")
 	if err != nil {
 		return "OH NO", errors.New("file not available.")
 	} else {
