@@ -7,6 +7,6 @@ RUN apk add --no-cache git && \
 
 FROM scratch
 COPY --from=0 /go/src/main /main
-COPY code/config.file /config.file
+COPY code/config.file /mount/config.file
 WORKDIR /
 CMD ["/main"]
